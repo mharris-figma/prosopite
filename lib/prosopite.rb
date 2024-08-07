@@ -13,8 +13,8 @@ module Prosopite
                 :prosopite_logger,
                 :custom_logger,
                 :ignore_pauses,
-                :backtrace_cleaner,
                 :enabled
+                # :backtrace_cleaner,
 
     attr_accessor :allow_stack_paths,
                   :ignore_queries,
@@ -26,9 +26,9 @@ module Prosopite
       self.allow_stack_paths = value
     end
 
-    def backtrace_cleaner
-      @backtrace_cleaner ||= Rails.backtrace_cleaner
-    end
+    #def backtrace_cleaner
+    #  @backtrace_cleaner ||= Rails.backtrace_cleaner
+    #end
 
     def enabled?
       @enabled = true if @enabled.nil?
@@ -222,7 +222,7 @@ module Prosopite
         queries.each { |q| notifications_str << "  #{q}\n" }
 
         notifications_str << "Call stack:\n"
-        kaller = backtrace_cleaner.clean(kaller)
+        # kaller = backtrace_cleaner.clean(kaller)
         kaller.each do |f|
           notifications_str << "  #{f}\n"
         end
@@ -232,13 +232,13 @@ module Prosopite
 
       @custom_logger.warn(notifications_str) if @custom_logger
 
-      Rails.logger.warn(red(notifications_str)) if @rails_logger
+      # Rails.logger.warn(red(notifications_str)) if @rails_logger
       $stderr.puts(red(notifications_str)) if @stderr_logger
 
-      if @prosopite_logger
-        File.open(File.join(Rails.root, 'log', 'prosopite.log'), 'a') do |f|
-          f.puts(notifications_str)
-        end
+      # if @prosopite_logger
+      #  File.open(File.join(Rails.root, 'log', 'prosopite.log'), 'a') do |f|
+      #    f.puts(notifications_str)
+      #  end
       end
 
       raise NPlusOneQueriesError.new(notifications_str) if @raise
